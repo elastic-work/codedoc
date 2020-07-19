@@ -60,7 +60,7 @@
 
 Git 克隆到本地文件查看即可：`git clone https://github.com/elastic-work/CodeDoc.git`
 
-#### Spring-Boot-Cases 欢迎您的参与
+#### CodeDoc 欢迎您的参与
 
 1. Fork 本仓库
 2. 新建 Feat_xxx 分支
