@@ -16,7 +16,6 @@
 
 #### 软件架构树 此树结构更新根据项目完成的先后顺序编写
 
-```markdown
  ├─ CodeDoc
  │    ├─ [编程语言篇](https://github.com/elastic-work/codedoc/tree/master/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%AF%87)
  │    │    ├─ [JavaSE](https://github.com/elastic-work/codedoc/tree/master/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%AF%87/JavaSE)
@@ -54,7 +53,6 @@
  │    │    │    ├─ images
  │    │    │    │    ├─ 相应的md文件的图片
  │    │    │    ├─ [算法.md](https://github.com/elastic-work/codedoc/blob/master/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%E7%AF%87/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95.md)
-```
 
 #### 安装教程
 
