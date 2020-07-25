@@ -13,6 +13,7 @@
 ### 第二章 JavaSE基础
 
 - Java语言的特点
+
 - JDK、JVM、JRE的关系是什么，全称是什么，作用是什么
   - 什么是字节码？使用字节码的好处？Java跨平台的原理？字节码怎么生成的？
 - Oracle JDK 和OpenJDK的对比
