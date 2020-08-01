@@ -1,43 +1,52 @@
-## 一、Map
-### 1.HashMap
-#### （1）LinkedHashMap
+###  JavaSE 高级 之 集合
 
-### 2.SortedMap
-
-#### （1）TreeMap
-
-#### （2）NavigableMap
-
-### 3.Hashtable
-
-#### （1）Properties
-
-## 二、Collection
-
-### 1.List
-
-#### (1) ArrayList
-
-#### (2) LinkedList
-
-#### (3) Vector
-
-### 2.Set
-
-#### (1) HashSet
-
-#### (2) SortedSet
-
-#### (3) TreeSet
-
-#### (4) KeySet
-
-## 三、Iterator
-
-### 1.ListIterator
-
-## 四、Collections
-
-## 五、Collections
-
-## 六、Enumeration
+- 请画出集合框架的继承体系图
+- 说说List、Set、Map三者的区别？
+- ArrayList和LinkedList的区别？
+- 你知道RandomAccess接口吗？他的作用是什么？
+- 你了解双向链表和双向循环链表吗？
+- 集合的安全性问题？
+  - 请问ArrayList、HashSet、HashMap是线程安全的吗？如果不是线程安全的集合怎么办？
+- ArrayList底层怎么实现的？
+  - 在什么样的场景下使用ArrayList
+  - 它是线程安全的吗？为什么？
+  - 如果我想使用线程安全的ArrayList，应该怎么做？
+  - ArrayList的常用方法有哪些？
+  - ArrayList的扩容机制是怎样的？
+- 知道ArrayList和Vector的区别吗？为什么要用ArrayList取代Vector呢？
+- HashMap和Hashtable的区别？
+  - 知道HashMap的扩容机制吗？
+  - 你知道HashMap的底层数据结构吗？不同版本的数据结构知道吗？
+  - 为什么要用这样的结构实现？
+  - 为什么HashMap总是使用2的幂作为哈希表的大小？
+  - 知道扰动函数吗？作用是什么？
+  - HashMap的长度为什么是2的幂次方？
+- HashSet如何检查重复？
+  - HashSet的底层原理是什么？
+- HashMap多线程操作死循环问题？
+- ConcurrentHashMap和Hashtable的区别
+  - ConcurrentHashMap是否有升级？如果有，你知道升级的原理吗？
+  - ConcurrentHashMap底层如何实现的？请结合自己画图分析
+- comparable和Comparator的区别
+- Comparator定制重排序？请给出排序示例代码
+  - compareTo方法
+- 请写出集合框架底层数据结构总结以及其操作的特点
+  - List
+    - ArrayList
+    - Vector
+    - LinkedList
+  - Set
+    - HashSet
+    - LinkedHashSet
+    - TreeSet
+  - Map
+    - HashMap
+    - LinkedHash Map
+    - Hashtable
+    - TreeMap
+- 如何选用集合
+- 除了这些集合其他的集合了解吗？
+- 并发集合和普通集合了解吗？
+- 数组和链表使用的常见了解吗？
+- Map中的key和value可以为null吗？
+- Collections的常用API方法
