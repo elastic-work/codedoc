@@ -54,7 +54,7 @@ Oracle JDK 和 Open JDK只在部分没有版权部分有差异，其他部分几
 
 - Java和其他语言的对比
 
-![1596265009584](images/1596263352314.png)
+![1596265009584](./images/1596263352314.png)
 
 ![1596265036746](E:\HbuilderXHome\CodeDoc\编程语言篇\JavaSE\images\1596263409989.png)
 
