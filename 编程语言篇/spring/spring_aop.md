@@ -331,25 +331,138 @@ around(after)
 ### 7、前置通知获取匹配方法参数
 
 ```
+AOP通知在进行匹配切入点的方法的时候，可以把切入点方法的参数给获取到！
+1、通过给通知添加JoinPoint形参来获得被匹配方法的参数，该参数位于形参的第一位，使用对应的JoinPoint的getArgs()获取对应的值
+2、AOP通知还可以使用切入点表达式指定通知参数名，参数的名称为通知中用于获取参数值的形参名称
+切入点表达式中的“&”必须要转义  ==== &amp;&amp;
+注意：上述格式中变量名分别定义在配置文件与类中，如果修改一方，另一方不修改，就会出现错误
 
+通知类：
+推荐第一种：
+public void before(JoinPoint jp) {
+		Object[] args = jp.getArgs(); //得到参数
+		for(int i = 0;i<args.length;i++) {
+			System.out.println(args[i]);
+		}
+		System.out.println("before...");
+	}
+	
+第二种：
+public void before(String a,int b) {
+		System.out.println(a);
+		System.out.println(b);
+		System.out.println("before...");
+	}
+
+xml:
+<aop:config>
+		<aop:aspect ref="advice">
+		<aop:pointcut  expression="execution(* com.spring.aop.demo02.TargetObject.method1(String,int)) &amp;&amp; args(a,b)" id="abc"/>
+			<aop:before method="before" pointcut-ref="abc" />		
+		</aop:aspect>
+	</aop:config>
 ```
 
 ### 8、前置通知修改对象目标方法
 
 ```
+//ProceedingJoinPoint继承JoinPoint
+public void around(ProceedingJoinPoint pjp) throws Throwable {
+		System.out.println("around...start");
+		Object[] args = pjp.getArgs(); //得到参数
+		for(int i = 0;i<args.length;i++) {
+			args[i] = (Integer)args[i]+10;
+			System.out.println(args[i]);
+		}
+		pjp.proceed(args);
+		
+	}
 
+<aop:config>
+		<aop:aspect ref="advice">
+		<aop:pointcut  expression="execution(* com.spring.aop.demo02.TargetObject.method1(..))" id="abc"/>
+			<aop:around method="around" pointcut-ref="abc" />		
+		</aop:aspect>
+	</aop:config>
 ```
 
 ### 9、后置通知获取对象方法的返回值
 
 ```
+只用后置通知可以获得方法返回值，并且必须是方法正常结束才可以获得。
+所以，只用两种后置通知可以获得方法返回值：
+1、afterReturning
+2、around
 
+获取返回值的两种方式：
+1、配置文件对通知声明进行配置的时候添加returning属性指定方法返回值
+//目标对象
+public class TargetObject {
+	 
+	public int method1(int a ,int b) {
+		System.out.println("method1...."+"a="+a+" b="+b);
+		return a+b;
+	}
+}
+
+//通知类里面的
+public void afterReturning(Object rst ){
+		System.out.println("结果："+rst);
+		System.out.println("afterReturning...");
+	}
+
+//xml
+<aop:config>
+		<aop:aspect ref="advice">
+		<aop:pointcut  expression="execution(* com.spring.aop.demo03.TargetObject.method1(..))" id="abc"/>
+			<aop:after-returning method="afterReturning" pointcut-ref="abc" returning="rst"/>		
+		</aop:aspect>
+	</aop:config>
+	
+//test
+public class Test {
+	public static void main(String[] args) {
+		ApplicationContext vg = new ClassPathXmlApplicationContext("applicationContext.xml");
+		Object bean = vg.getBean("target");
+		TargetObject to = (TargetObject) bean;
+		to.method1(1,10);
+		System.out.println("--------------");
+	}
+}
+2、ProcessdingJoinPoint 对象的 processd()方法的返回值就是方法执行的返回值
+注意事项：用ProcessdingJoinPoint 对象的 processd()方法返回值的时候，通知方法一定要有和目标对象匹配的返回值！！！
+
+/**
+*  MyAdvice类
+*/
+//pjp执行目标对象方法的时候，如果目标对象方法有返回值，那么这个地方也要有返回值
+	public int around(ProceedingJoinPoint pjp) throws Throwable {
+		System.out.println("around...start");
+		Object[] args = pjp.getArgs(); //得到参数
+		/*
+		 * for(int i = 0;i<args.length;i++) { args[i] = (Integer)args[i]+10;
+		 * System.out.println(args[i]); }
+		 */
+		Object rst = pjp.proceed(args);
+		//around方法把原来的目标对象的这个方法的返回值给吃了
+		System.out.println("aorund...."+(Integer)rst);
+		System.out.println("around...end");
+		return (int) rst;
+	}
+	
+<aop:config>
+		<aop:aspect ref="advice">
+		<aop:pointcut  expression="execution(* com.spring.aop.demo03.TargetObject.method1(..))" id="abc"/>
+			<!-- <aop:after-returning method="afterReturning" pointcut-ref="abc" returning="rst"/>		 -->
+			<aop:around method="around" pointcut-ref="abc" />
+		</aop:aspect>
+	</aop:config>
 ```
 
 ### 10、异步通知获取方法的异常对象
 
 ```
-
+使用after-throwing通知获得，获得后可以给通知方法传递Throwable对象对象
 ```
 
 ### 11、简单的注解开发
@@ -434,19 +547,9 @@ public class Test {
 </beans>
 ```
 
-### 12、不同种类的注解通知出现的顺序
 
-```
 
-```
-
-### 13、相同种类的注解通知出现的顺序
-
-```
-
-```
-
-### 14.jdk动态代理
+### 12.jdk动态代理
 
 ```
 /**
@@ -525,7 +628,7 @@ public class TestInvocationHandler {
 }
 ```
 
-### 15.CGlib动态代理
+### 13.CGlib动态代理
 
 ```
 <dependencies>
@@ -606,7 +709,7 @@ public class TestCGlib {
 }
 ```
 
-### 16、aop:aspectj-autoproxy 流程分析
+### 14、aop:aspectj-autoproxy 流程分析
 
 ```
 
