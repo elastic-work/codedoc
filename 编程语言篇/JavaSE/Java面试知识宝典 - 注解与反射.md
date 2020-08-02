@@ -1,2 +1,59 @@
-### 第一章 
+### 第一章 注解
 
+- 什么是注解？注解的作用是什么？
+  - 注解的格式是什么
+  - 注解在哪里使用
+- 注解有几个元注解
+  - 分别是哪些元注解
+- 如何自定义注解？
+
+### 第二章 反射
+
+- 什么是反射
+- 了解静态语言和动态语言吗？
+- 反射的优点和缺点是什么？
+- 反射获取对象的几种方式了解吗？
+- 获取Class的实例有几种方式？
+- Class类常用的方法知道吗？
+- 哪些类型有Class对象？
+  - class：外部类，成员（成员内部类，静态内部类），局部内部类，匿名内部类
+  - interface：接口
+  - []：数组
+  - enum：枚举
+  - annotation：注解 @interface
+  - primitive type：基本数据类型
+  - void
+- 获取运行时类的完整结构
+  - 通过反射获取运行时类的完整结构
+    - Field
+    - Method
+    - Constructor
+    - SuperClass
+    - Interface
+    - Annotation
+  - 实现的全部接口
+  -  所继承的父类
+  - 全部的构造器
+  - 全部的方法
+  - 全部的Field
+  - 注解
+  - .... 其他
+- 有了Class对象，能做什么？
+  - 创建类的对象：调用Class对象的newInstance()方法
+    - 类必须有一个无参数的构造器
+    - 类的构造器的访问权限需要足够
+  - 步骤：
+    - 通过Class类的 getDeclaredConstruor(Class ... prarmeterTypes) 取得本类的指定形参类型的构造器
+    - 向构造器的形参中传递一个对象参数进去，里面包含了构造器中所需的各个参数
+    - 通过 Constantor实例化对象
+    - 不能直接操作属性 需要设置 安全检测 `username.setAccessible(true);`
+- 反射操作泛型
+  - Java采用泛型擦除的机制来引入泛型，Java中的泛型仅仅是给编译器javac使用的，避免数据的安全性和免去强制类型转换的问题，但是一旦，编译完成，所有和泛型有关的类型会全部擦除
+  - 为了通过反射操作这些类型，Java新增了ParameteriedType GenericArrayType TypeVarilable 和 WildcardType 几种类型标识不能被归一待Class类中但是和原始类型齐名的类型
+  - ParameteriedType：表示一种参数化类型 比如 ：Collection<String>
+  - GenericArrayType：表示一种元素类型是参数化类型或者剋下变量的数组类型
+  - TypeVarilable：是各种类型变量的公共父接口
+  - WildcardType ：代表一种通配符类型表达式
+- 反射操作注解
+  - getAnnotations
+  - getAnnotation
