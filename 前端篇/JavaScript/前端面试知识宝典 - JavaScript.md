@@ -78,3 +78,35 @@ Flash、Ajax 各自的优缺点，在使用中如何取舍?
 
 javascript 的本地对象，内置对象和宿主对象
 
+- Common.js 和 ES6 中模块引入的区别？
+
+```js
+1. CommonJS 是一种模块规范，最初被应用于 Node.js，成为 Nodejs 的模块规范
+
+2. 自 ES6 起，引入了一套新的 ES6 Module 规范，在语言标准的层面上实现了模块功能，有望成为浏览器和服务器通用的模块解决方案。但目前浏览器对 ES6 Module 兼容不好，平时在 Webpack 中使用的 export 和 import ,会经过 Babel 转换为 CommonJS 规范
+
+3. CommonJS 和 ES6 在使用时的差别主要有
+ - CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用
+ - CommonJS 是单个值导出，ES6 Module 可以导出多个
+ - CommonJS 是动态语法可以写在判断里，ES6 Module 静态语法只能写在顶层
+ - CommonJS 的 this 是当前模块，ES6 Module 的 this 是 undefined
+```
+
+
+
+- JS 有几种方法判断变量的类型？
+
+```js
+1. typeof
+ - 当需要判断变量是否是 number，string，boolean，function，undefined 等类型时，可以使用 typeof 进行判断
+
+2. instanceof
+ - instanceof 运算符与 typeof 运算符相似，用于识别正在处理的对象的类型
+ - 与 typeof 不同的是，instanceof 要求开发者明确的确认对象为某特定类型
+ 
+3. constructor 
+ - constructor 本来是原型对象上的属性，指向构造函数
+ - 但是根据实例对象寻找属性的顺序，若实例对象上没有实例属性或方法时，就去原型链上寻找
+ - 因此，实例对象也是能使用 constructor 属性的
+```
+
