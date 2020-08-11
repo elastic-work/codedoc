@@ -110,3 +110,118 @@ javascript 的本地对象，内置对象和宿主对象
  - 因此，实例对象也是能使用 constructor 属性的
 ```
 
+
+
+- 请你谈谈 Cookie 的弊端
+
+```js
+1. Cookie 数量和长度的限制，每个 domain 最多只能有20条 cookie ，每个 cookie 长度不能超过 4kb，否则会被截掉
+
+2. 安全性问题，如果 cookie 被人拦截了，那人就可以取得所有的 session 信息。即使加密也与事无补，因为拦截者并不需要知道 cookie 的意义，只要原样转发 cookie 就可以达到目的了
+
+3. 有些状态不可能保存在客户端，例如，为了防止重复提交表单，我们需要在服务器端保存一个计数器。如果我们把这个计数器保存在客户端，那么它起不到任何作用
+```
+
+
+
+- 手写 call、apply 及 bind 函数
+
+```js
+call 函数实现
+
+Function.prototype.myCall = function (context) {
+  // 判断调用对象
+  if (typeof this !== "function") {
+    console.error("type error");
+	}
+  
+  // 获取参数
+  let args = [...arguments].slice(1),
+      result = null;
+  
+  // 判断 context 是否传入，如果未传入则设置为 window
+  context = context || window;
+  
+  // 将调用函数设为对象的方法
+  context.fn = this;
+  
+  // 调用函数
+  result = context.fn(...args);
+  
+  // 将属性删除
+  delete context.fn;
+  
+  return result;
+}
+
+
+apply 函数实现
+
+Function.prototype.myApply = function (context) {
+  // 判断调用对象是否为函数
+  if (typeof this !== "function") {
+    throw new TypeError("Error");
+  }
+  
+  let result = null;
+  
+  // 判断 context 是否存在，如果未传入则为 window
+  context = context || window;
+  
+  // 将函数设为对象的方法
+  context.fn = this;
+  
+  // 调用方法
+  if (arguments[1]) {
+    result = context.fn(...arguments[1]);
+  } else {
+    result = context.fn();
+  }
+  
+  // 将属性删除
+  delete context.fn;
+  
+  return result;
+}
+
+bind 函数实现
+ Function.prototype.myBind = function (context) {
+   // 判断调用对象是否为函数
+   if (typeof this !== "function") {
+     throw new TypeError("Error")
+   }
+   
+   // 获取参数
+   var args = [...arguments].slice(1),
+       fn = this;
+   
+   return function Fn() {
+     // 根据调用方式，传入不同绑定值
+     return fn.apply(this instanceof Fn ? this : context, args.concat(...arguments));
+   }
+ }
+```
+
+
+
+- get 和 post 请求在缓存方面的区别
+
+```js
+1. 缓存一般只适用于那些不会更新服务端数据的请求
+2. 一般 get 请求都是查找请求，不会对服务器资源数据造成修改
+3. post 请求一般都会对服务器数据造成修改，所以，一般会对 get 请求进行缓存，很少会对 post 请求进行缓存
+```
+
+
+
+- websocket 和 ajax 轮询
+
+```js
+1. websocket 是 html5 中提出的新的协议，可以实现客户端与服务器的通信，实现服务器的推送功能
+2. 优点：只要建立一次连接，就可以连续不断的得到服务器推送消息，节省带宽和服务器端的压力
+3. ajax 轮询模拟常连接就是每隔一段时间（0.5s）就向服务器发起 ajax 请求，查询服务器是否有数据更新
+4. 缺点：每次都要建立 HTTP 连接，即使需要传输的数据非常少，浪费带宽
+```
+
+
+
