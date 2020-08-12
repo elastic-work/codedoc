@@ -225,3 +225,134 @@ bind 函数实现
 
 
 
+- JavaScript 代码中的 "use strict"; 是什么意思？使用它区别是什么？
+
+```js
+1. use strict 指的是严格运行模式，在这种模式对 js 的使用添加了一些限制
+   - 禁止 this 指向全局对象
+   - 禁止使用 with 语句
+   - ...
+   
+2. 设立严格模式的目的，主要是为了消除代码使用中的一些不安全的使用方式，也是为了消除 js 语法本身的一些不合理的地方，以此来减少一些运行时的怪异行为
+
+3. 使用严格运行模式也能够提高编译的效率，从而提高代码的运行速度
+
+4. 严格模式代表了 js 一种更合理、更安全、更严谨的发展方向
+
+相关知识点:
+	use strict 是一种 ECMAScript5 添加的(严格)运行模式，这种模式使得 JavaScript 在更严格的条件下运行
+  设立"严格模式"的目的，主要有以下几个：
+  	1. 消除 JavaScript 语法的一些不合理、不严谨之处、减少一些怪异行为
+    2. 消除代码运行的一些不安全之处，保证代码运行的安全
+    3. 提高编译器效率，增加运行速度
+    4. 为未来新版本的 JavaScript 做好铺垫
+
+区别：
+		1. 禁止使用 with 语句
+    2. 禁止 this 关键字指向全局对象
+    3. 对象不能有重名的属性
+```
+
+
+
+- 手写 async await
+
+```js
+function asyncToGenerator(generatorFunc) {
+  return function() {
+		const gen = generatorFunc.apply(this, arguments)
+    return new Promise((resolve, reject) => {
+      function step(key, arg) {
+        let generatorResult
+        try {
+          generatorResult = gen[key](arg)
+        } catch (error) {
+          return reject(error)
+        }
+        const { value, done } = generatorResult
+        if (done) {
+          return resolve(value)
+        } else {
+          return Promise.resolve(value).then(val => step('next', val), err => step('throw', err))
+        }
+      }
+      step("next")
+    })
+  }
+}
+
+===============================================================
+  
+解析
+
+function asyncToGenerator(generatorFunc) {
+  // 返回的是一个新的函数
+  return function() {
+    // 先调用 generator 函数 生成迭代器
+    // 对应 var gen = testG()
+    const gen = generatorFunc.apply(this, arguments)
+    
+    // 返回一个 promise 因为外部是用 .then 的方式或者 await 的方式去使用这个函数的返回值的
+    // var test = asyncToGenerator(testG)
+    // test().then(res => console.log(res))
+    return new Promise((resolve, reject) => {
+      // 内部定义一个 step 函数 用来一步一步的跨过 yield 的阻碍
+      // key 有 next 和 throw 两种取值，分别对应了 gen 的 next 和 throw 方法
+      // arg 参数则是用来把 promise resolve 出来的值交给下一个 yield
+      function step(key, arg) {
+        let generatorResult
+        
+        // 这个方法需要包裹在 try catch 中
+        // 如果报错了，就把 promise 给 reject 掉，外部通过 .catch 可以获取到错误
+        try {
+          generatorResult = gen[key](arg)
+        } catch (error) {
+          return reject(error)
+        }
+        
+        // gen.next() 得到的结果是一个 { value, done } 的结构
+        const { value, done } = generatorResult
+        
+        if (done) {
+          // 如果已经完成了，就直接 resolve 这个 promise
+          // 这个 done 是在最后一次调用 next 后才会为 true
+          // 以本文的例子来说，此时的结果是 { done: true, value: 'success' }
+          // 这个 value 也就是 generator 函数最后的返回值
+          return resolve(value)
+        } else {
+          // 除了最后结束的时候外，每次调用 gen.next()
+          // 其实是返回 { value: Promise, done: false } 的结构
+          // 这里要注意的是 Promise.resolve 可以接受一个 promise 为参数
+          // 并且这个 promise 参数被 resolve 的时候，这个 then 才会被调用
+          return Promise.resolve(
+          	// 这个 value 对应的是 yield 后面的 promise
+            value
+          ).then(
+          	// value 这个 promise 被 resolve 的时候，就会执行 next
+            // 并且只要 done 不是 true 的时候，就会递归的往下解开 promise
+            // 对应 gen.next().value.then(value => {
+            //		gen.next(value).value.then(value2 => {
+            //    	gen.next()
+            //			
+            //			// 此时 done 为 true 了，整个 promise 被 resolve 了
+            //			// 最外部的 test().then(res => console.log(res))的 then 就开始执行了
+            //    })
+            // })
+            function onResolve(val) {
+              step("next", val)
+            },
+            // 如果 promise 被 reject 了，就再次进入 step 函数
+            // 不同的是，这次的 try catch 中调用的是 gen.throw(err)
+            // 那么自然就被 catch 到，然后把 promise 给 reject 掉了
+            function onReject(err) {
+              step("throw", err)
+            },
+          )
+        }
+      }
+      step("next")
+    })
+  }
+}
+```
+
