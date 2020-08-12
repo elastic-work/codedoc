@@ -75,13 +75,41 @@
         - [Open-FaIcon](./中间件篇/监控系统/Open-Falcon/README.md)
         - [Prometheus](./中间件篇/监控系统/Prometheus/README.md)
     - 
-  
+   - 高并发原则：
+     -  无状态
+      - 拆分
+      - 服务化
+      -消息队列
+      - 数据异构         
+      - 缓存银弹    
+      - 并发化
+        
 
+  - 高可用原则
+    - 负载均衡
+    - 隔离术
+    - 降级
+    - 限流
+    - 切流量
+    - 可回滚
+    - 业务设计原则
+    - 负载均衡
+    - 失败重试
+    - 限流
+    - 降级特技
+    - 超时和重试机制
+    - 回滚机制
+    - 压测与预案
+    - 应用级缓存
+    - HTTP缓存
+   
+        
 
 
 Git 克隆到本地文件查看即可：`git clone https://github.com/elastic-work/CodeDoc.git`
 
 #### CodeDoc 欢迎您的参与
+您可以联系QQ：183631330 加入讨论
 
 1. Fork 本仓库
 2. 新建 Feat_xxx 分支
