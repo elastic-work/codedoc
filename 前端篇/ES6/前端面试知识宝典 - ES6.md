@@ -148,3 +148,272 @@ target // {a:1, b:2, c:3}
 5. ES6 在 Object 原型上还新增了 Object.keys()，Object.values()，Object.entries() 方法，用来获取对象的所有键、所有值和所有键值对数组
 ```
 
+
+
+- 举一些 ES6 对 Function 函数类型做的常用升级优化？(重要)
+
+```js
+优化部分
+
+1. 箭头函数(核心)。箭头函数是ES6核心的升级项之一，箭头函数里没有自己的 this,这改变了以往JS函数中最让人难以理解的 this 运行机制。主要优化点:
+ - 箭头函数内的 this 指向的是函数定义时所在的对象，而不是函数执行时所在的对象
+ 
+ - ES5 函数里的 this 总是指向函数执行时所在的对象，这使得在很多情况下 this 的指向变得很难理解，尤其是非严格模式情况下，this 有时候会指向全局对象，这甚至也可以归结为语言层面的 bug 之一
+ 
+ - ES6的箭头函数优化了这一点，它的内部没有自己的 this,这也就导致了 this 总是指向上一层的this，如果上一层还是箭头函数，则继续向上指，直到指向到有自己 this 的函数为止，并作为自己的 this
+
+ - 箭头函数不能用作构造函数，因为它没有自己的 this，无法实例化
+
+ - 因为箭头函数没有自己的 this,所以箭头函数内也不存在 arguments 对象（可以用扩展运算符代替）
+ 
+2. 函数默认赋值。ES6之前，函数的形参是无法给默认值的，只能在函数内部通过变通方法实现。ES6以更简洁更明确的方式进行函数默认赋值
+
+function es6Fuc (x, y = 'default') {
+    console.log(x, y);
+}
+es6Fuc(4) // 4, default
+
+升级部分
+
+ES6 新增了双冒号运算符，用来取代以往的 bind，call，和apply(浏览器暂不支持，Babel已经支持转码)
+
+foo::bar;
+// 等同于
+bar.bind(foo);
+
+foo::bar(...arguments);
+// 等同于
+bar.apply(foo, arguments);
+```
+
+
+
+- Symbol 是什么，有什么作用？
+
+```js
+Symbol 是 ES6 引入的第七种原始数据类型，所有 Symbol() 生成的值都是独一无二的，可以从根本上解决对象属性太多导致属性名冲突覆盖的问题。对象中 Symbol() 属性不能被 for...in 遍历，但是也不是私有属性
+```
+
+
+
+- Set 是什么，有什么作用？
+
+```js
+Set 是 ES6 引入的一种类似 Array 的新的数据结构，Set 实例的成员类似于数组 item 成员，区别是Set 实例的成员都是唯一，不重复的。这个特性可以轻松地实现数组去重
+```
+
+
+
+- Map 是什么，有什么作用？
+
+```js
+Map 是 ES6 引入的一种类似 Object 的新的数据结构，Map 可以理解为是 Object 的超集，打破了以传统键值对形式定义对象，对象的 key 不再局限于字符串，也可以是 Object。可以更加全面的描述对象的属性
+```
+
+
+
+- Proxy 是什么，有什么作用？
+
+```js
+1. Proxy 是 ES6 新增的一个构造函数，可以理解为 JS 语言的一个代理，用来改变 JS 默认的一些语言行为，包括拦截默认的 get/set 等底层方法，使得 JS 的使用自由度更高，可以最大限度的满足开发者的需求
+2. 比如通过拦截对象的 get/set 方法，可以轻松地定制自己想要的 key 或者 value
+3. 下面的例子可以看到，随便定义一个 myOwnObj的key,都可以变成自己想要的函数
+
+function createMyOwnObj() {
+  //想把所有的key都变成函数，或者Promise,或者anything
+  return new Proxy({}, {
+    get(target, propKey, receiver) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          let randomBoolean = Math.random() > 0.5;
+          let Message;
+          if (randomBoolean) {
+            Message = `${propKey},成功`;
+            resolve(Message);
+          } else {
+            Message = `${propKey},失败`;
+            reject(Message);
+          }
+        }, 1000);
+      });
+    }
+  });
+}
+
+let myOwnObj = createMyOwnObj();
+
+myOwnObj.text01.then(result => {
+  console.log(result) //text01,成功
+}).catch(error => {
+  console.log(error) //text01,失败
+})
+
+myOwnObj.text02.then(result => {
+  console.log(result) //text02,成功
+}).catch(error => {
+  console.log(error) //text02,失败
+})
+```
+
+
+
+- Reflect 是什么，有什么作用？
+
+```js
+Reflect 是 ES6 引入的一个新的对象，他的主要作用有两点
+ - 将原生的一些零散分布在 Object、Function 或者全局函数里的方法(如 apply、delete、get、set等等)，统一整合到 Reflect 上，这样可以更加方便更加统一的管理一些原生API
+ - 因为 Proxy 可以改写默认的原生API，如果一旦原生API别改写可能就找不到了，所以 Reflect 也可以起到备份原生API的作用，使得即使原生API被改写了之后，也可以在被改写之后的API用上默认的API
+```
+
+
+
+- Promise 是什么，有什么作用？
+
+```js
+- Promise 是 ES6 引入的一个新的对象，他的主要作用是用来解决 JS 异步机制里，回调机制产生的“回调地狱”
+- 它并不是什么突破性的API，只是封装了异步回调形式，使得异步回调可以写的更加优雅，可读性更高，而且可以链式调用
+```
+
+
+
+- Iterator 是什么，有什么作用？(重要)
+
+```js
+1. Iterator 是 ES6 中一个很重要概念，它并不是对象，也不是任何一种数据类型。因为ES6新增了 Set、Map 类型，他们和 Array、Object 类型很像，Array、Object 都是可以遍历的，但是 Set、Map都不能用 for 循环遍历，解决这个问题有两种方案
+
+ - 一种是为Set、Map单独新增一个用来遍历的API
+ - 另一种是为Set、Map、Array、Object新增一个统一的遍历API
+
+显然，第二种更好，ES6 也就顺其自然的需要一种设计标准，来统一所有可遍历类型的遍历方式。Iterator 正是这样一种标准。或者说是一种规范理念
+
+2. 就好像 JavaScript 是 ECMAScript 标准的一种具体实现一样，Iterator 标准的具体实现是Iterator 遍历器。Iterator 标准规定，所有部署了 key 值为 [Symbol.iterator]，且 [Symbol.iterator] 的 value 是标准的 Iterator 接口函数(标准的 Iterator 接口函数: 该函数必须返回一个对象，且对象中包含 next 方法，且执行 next() 能返回包含 value/done 属性的 Iterator 对象)的对象，都称之为可遍历对象，next() 后返回的 Iterator 对象也就是 Iterator 遍历器
+
+//obj就是可遍历的，因为它遵循了Iterator标准，且包含[Symbol.iterator]方法，方法函数也符合标准的Iterator接口规范。
+//obj.[Symbol.iterator]() 就是Iterator遍历器
+let obj = {
+  data: [ 'hello', 'world' ],
+  [Symbol.iterator]() {
+    const self = this;
+    let index = 0;
+    return {
+      next() {
+        if (index < self.data.length) {
+          return {
+            value: self.data[index++],
+            done: false
+          };
+        } else {
+          return { value: undefined, done: true };
+        }
+      }
+    };
+  }
+};
+
+ES6 给 Set、Map、Array、String 都加上了 [Symbol.iterator] 方法，且 [Symbol.iterator] 方法函数也符合标准的 Iterator 接口规范，所以 Set、Map、Array、String 默认都是可以遍历的
+
+//Array
+let array = ['red', 'green', 'blue'];
+array[Symbol.iterator]() //Iterator遍历器
+array[Symbol.iterator]().next() //{value: "red", done: false}
+
+//String
+let string = '1122334455';
+string[Symbol.iterator]() //Iterator遍历器
+string[Symbol.iterator]().next() //{value: "1", done: false}
+
+//set
+let set = new Set(['red', 'green', 'blue']);
+set[Symbol.iterator]() //Iterator遍历器
+set[Symbol.iterator]().next() //{value: "red", done: false}
+
+//Map
+let map = new Map();
+let obj= {map: 'map'};
+map.set(obj, 'mapValue');
+map[Symbol.iterator]().next()  {value: Array(2), done: false}
+```
+
+
+
+- Generator 函数是什么，有什么作用？
+
+```js
+1. 如果说 JavaScript 是 ECMAScript 标准的一种具体实现、Iterator 遍历器是 Iterator 的具体实现，那么 Generator 函数可以说是 Iterator 接口的具体实现方式
+
+2. 执行 Generator 函数会返回一个遍历器对象，每一次 Generator 函数里面的 yield 都相当一次遍历器对象的 next()方法，并且可以通过 next(value) 方法传入自定义的 value,来改变 Generator 函数的行为
+
+3. Generator 函数可以通过配合 Thunk 函数更轻松更优雅的实现异步编程和控制流管理
+```
+
+
+
+- Class、extends 是什么，有什么作用？
+
+```js
+ES6的class可以看作只是一个ES5生成实例对象的构造函数的语法糖。它参考了java语言，定义了一个类的概念，让对象原型写法更加清晰，对象实例化更像是一种面向对象编程。Class类可以通过 extends 实现继承。它和ES5构造函数的不同点：
+
+1. 类的内部定义的所有方法，都是不可枚举的
+
+///ES5
+function ES5Fun (x, y) {
+  this.x = x;
+  this.y = y;
+}
+ES5Fun.prototype.toString = function () {
+   return '(' + this.x + ', ' + this.y + ')';
+}
+var p = new ES5Fun(1, 3);
+p.toString();
+Object.keys(ES5Fun.prototype); //['toString']
+
+//ES6
+class ES6Fun {
+  constructor (x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  toString () {
+    return '(' + this.x + ', ' + this.y + ')';
+  }
+}
+
+Object.keys(ES6Fun.prototype); //[]
+
+2. ES6的class类必须用new命令操作，而ES5的构造函数不用new也可以执行
+
+3. ES6的class类不存在变量提升，必须先定义class之后才能实例化，不像ES5中可以将构造函数写在实例化之后
+
+4. ES5 的继承，实质是先创造子类的实例对象this，然后再将父类的方法添加到this上面。ES6 的继承机制完全不同，实质是先将父类实例对象的属性和方法，加到this上面（所以必须先调用super方法），然后再用子类的构造函数修改this
+```
+
+
+
+- module、export、import 是什么，有什么作用？
+
+```js
+module、export、import 是ES6用来统一前端模块化方案的设计思路和实现方案。export、import的出现统一了前端模块化的实现方案，整合规范了浏览器/服务端的模块化方法，用来取代传统的AMD/CMD、requireJS、seaJS、commondJS等等一系列前端模块不同的实现方案，使前端模块化更加统一规范，JS也能更加能实现大型的应用程序开发
+
+1. import引入的模块是静态加载（编译阶段加载）而不是动态加载（运行时加载）
+
+2. import引入export导出的接口值是动态绑定关系，即通过该接口，可以取到模块内部实时的值
+```
+
+
+
+- 日常前端代码开发中，有哪些值得用 ES6 去改进的编程优化或者规范？
+
+```js
+1. 常用箭头函数来取代var self = this;的做法
+
+2. 常用let取代var命令
+
+3. 常用数组/对象的结构赋值来命名变量，结构更清晰，语义更明确，可读性更好
+
+4. 在长字符串多变量组合场合，用模板字符串来取代字符串累加，能取得更好的效果和阅读体验
+
+5. 用Class类取代传统的构造函数，来生成实例化对象
+
+6. 在大型应用开发中，要保持module模块化开发思维，分清模块之间的关系，常用import、export方法
+```
+
