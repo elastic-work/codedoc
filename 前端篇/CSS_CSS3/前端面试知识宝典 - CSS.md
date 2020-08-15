@@ -85,3 +85,25 @@ px
 5. transform:scale(0); 将一个元素设置为缩放无限小，元素将不可见，元素原来所在的位置将被保留
 ```
 
+
+
+- calc、support、media 各自的含义及用法？
+
+```js
+1. @support 主要是用于检测浏览器是否支持 CSS 的某个属性，其实就是条件判断，如果支持某个属性，可以写一套样式，如果不支持某个属性，也可以提供另外一套样式作为替补
+
+2. calc()函数用于动态计算长度值，calc()函数支持"+""-""*""/"运算
+
+3. media 查询，可以针对不同的媒体类型定义不同的样式
+```
+
+
+
+- 解释 css sprites 如何使用？
+
+```js
+1. CSS Sprites 其实就是把网页中一些背景图片整合到一张图片文件中，再利用 CSS 的"background-image","background-repeat","background-position"的组合进行背景定位, "background-position"可以用数字能精确的定位出背景图片的位置
+
+2. CSS Sprites 为一些大型的网站节约了带宽,让提高了用户的加载速度和用户体验，不需要加载更多的图片
+```
+
