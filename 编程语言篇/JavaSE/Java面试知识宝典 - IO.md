@@ -84,42 +84,31 @@ public static void readCN() throws IOException{
       // 省略Get 和 Set
   }
   
+  // 核心工具类
+  public class UserDbUtil {
+      private String dbName = null;
+      private String path = null;
   
-  // 核心代码
-  public class ObjectOutDemo {
-      private static String dbName = "User.ic";
-      private static String path = "src\\cn\\icanci\\day0812\\ic_db";
+      private UserDbUtil() {
+      }
   
-      public static void main(String[] args) {
-          ArrayList<User> users = new ArrayList<>();
-          for (int i = 0; i < 10; i++) {
-              users.add(new User(i, "ic" + i, "pwd" + i));
-          }
-          save(users, path, dbName);
-          ArrayList<User> readUsers = new ArrayList<>();
-          List<User> listNew = readDb(path, dbName, readUsers);
-          listNew.forEach(System.out::println);
-          deleteById(path, dbName, 1);
-          listNew = readDb(path, dbName, readUsers);
-          System.out.println("=================");
-          listNew.forEach(System.out::println);
-  
+      public UserDbUtil(String dbName, String path) {
+          this.dbName = dbName;
+          this.path = path;
       }
   
       /**
        * 读取数据到 内存
        *
-       * @param path
-       * @param dbName
-       * @param list
        * @return
        */
-      public static List<User> readDb(String path, String dbName, List<User> list) {
+      public List<User> readDb() {
           ObjectInputStream in = null;
           try {
+              System.out.println("您的数据库路径如下：" + path + "\\" + dbName);
               in = new ObjectInputStream(new FileInputStream(path + "\\" + dbName));
-              list = (List<User>) in.readObject();
-              return list;
+              List<User> users = (List<User>) in.readObject();
+              return users;
           } catch (Exception e) {
               e.printStackTrace();
           } finally {
@@ -131,37 +120,25 @@ public static void readCN() throws IOException{
                   }
               }
           }
-          return list;
+          return null;
       }
   
       /**
        * 保存数据到内存
        *
        * @param list
-       * @param path
-       * @param dbName
        */
-      public static void save(List<User> list, String path, String dbName) {
+      public void save(List<User> list) {
           if (null == list) {
-              throw new NullPointerException("输出的list不能为null");
+              throw new NullPointerException("输入的list不能为null");
           }
           ObjectOutputStream out = null;
           try {
-              ArrayList<User> temp = new ArrayList<>();
-              List<User> users = readDb(path, dbName, temp);
-              if (null == users) {
-                  out = new ObjectOutputStream(new FileOutputStream(path + "\\" + dbName));
-                  out.writeObject(list);
-                  System.out.println("数据保存成功");
-                  return ;
-              }
-              for (User user : list) {
-                  users.add(user);
-              }
               out = new ObjectOutputStream(new FileOutputStream(path + "\\" + dbName));
-              out.writeObject(users);
+              out.writeObject(list);
               System.out.println("数据保存成功");
-          } catch (Exception e) {
+          } catch (
+                  Exception e) {
               e.printStackTrace();
           } finally {
               if (null != out) {
@@ -172,18 +149,16 @@ public static void readCN() throws IOException{
                   }
               }
           }
+  
       }
   
       /**
        * 根据id删除
        *
-       * @param path
-       * @param dbName
        * @param id
        */
-      public static void deleteById(String path, String dbName, Integer id) {
-          ArrayList<User> users = new ArrayList<>();
-          List<User> list = readDb(path, dbName, users);
+      public void deleteById(Integer id) {
+          List<User> list = readDb();
           Iterator<User> iterator = list.iterator();
           while (iterator.hasNext()) {
               User next = iterator.next();
@@ -191,28 +166,25 @@ public static void readCN() throws IOException{
                   iterator.remove();
               }
           }
-          save(list, path, dbName);
+          save(list);
       }
   
       /**
        * 添加一个元素
        *
-       * @param path
-       * @param dbName
        * @param user
        */
-      public static void insert(String path, String dbName, User user) {
-          ArrayList<User> users = new ArrayList<>();
-          List<User> users1 = readDb(path, dbName, users);
+      public void insert(User user) {
+          List<User> users1 = readDb();
           users1.add(user);
-          save(users1, path, dbName);
+          save(users1);
       }
-  }
   
+  }
   ```
-
+  
   - 知道克隆吗？
-
+  
   ```markdown
   Java提供了Cloneable接口，实现Cloneable接口的类可以被克隆
   Java提供的克隆是浅克隆
@@ -224,7 +196,7 @@ public static void readCN() throws IOException{
   
   也可以使用序列化来实现深度克隆
   ```
-
+  
 - 字节流和字符流的区别
 
 ```
