@@ -4,9 +4,176 @@ Promise、Promise.all、Promise.race 分别怎么用？
 
 手写函数防抖和函数节流
 
-手写AJAX
+- Ajax 使用
 
-this
+```js
+全称: Asyncheronous Javascript And XML
+
+创建 Ajax 的过程
+
+1. 创建 XMLHttpRequest 对象（异步调用对象）
+   var xhr = new XMLHttpRequest();
+
+2. 创建新的 Http 请求（方法、URL、是否异步）
+   xhr.open(‘get’,’example.php’,false);
+
+3. 设置响应 HTTP 请求状态变化的函数
+   onreadystatechange 事件中 readyState 属性等于4
+   响应的 HTTP 状态为 200(OK) 或者 304(Not Modified)
+
+4. 发送 http 请求
+   xhr.send(data);
+
+5. 获取异步调用返回的数据
+- 注意：
+	- 页面初次加载时，尽量在 web 服务器一次性输出所有相关的数据，只在页面加载完成之后，用户进行操作时采用 ajax 进行交互
+	- 同步 ajax 在 IE 上会产生页面假死的问题。所以建议采用异步 ajax
+	- 尽量减少 ajax 请求次数
+	- ajax 安全问题，对于敏感数据在服务器端处理，避免在客户端处理过滤。对于关键业务逻辑代码也必须放在服务器端处理
+```
+
+
+
+- 谈谈 this 的理解
+
+```js
+1. this 总是指向函数的直接调用者（而非间接调用者）
+2. 如果有 new 关键字，this 指向 new 出来的那个对象
+3. 在事件中，this 指向目标元素，特殊的是 IE 的 attachEvent 中的 this 总是指向全局对象window
+```
+
+
+
+- JavaScript 定义类的 4 种方法
+
+```js
+1. 工厂方法
+
+function creatPerson(name, age) {
+  var obj = new Object();
+  
+  obj.name = name;
+  obj.age = age;
+  
+  obj.sayName = function() {
+    window.alert(this.name);
+  };
+  
+  return obj;
+}
+
+==========================================
+  
+2. 构造函数方法
+
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+  
+  this.sayName = function() {
+    window.alert(this.name);
+  };
+}
+
+==========================================
+
+3. 原型方法（缺陷: 类里属性的值都是在原型里给定的）
+
+function Person() {
+  
+}
+
+Person.prototype = {
+  constructor : Person,
+  name : "Ning",
+  age : "23",
+  sayName : function() {
+    window.alert(this.name);
+  }
+};
+
+==========================================
+  
+4. 组合使用构造函数和原型方法（使用最广）
+
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+Person.prototype = {
+  constructor : Person,
+  sayName : function() {
+    window.alert(this.name);
+  }
+};
+```
+
+
+
+- JavaScript 实现继承的 3 种方法
+
+```js
+1. 借用构造函数法（经典继承）
+
+function SuperType(name) {
+  this.name = name;
+  
+  this.sayName = function() {
+    window.alert(this.name);
+	};
+}
+
+function SubType(name, age) {
+  SuperType.call(this, name); // 在这里借用了父类的构造函数
+  
+  this.age = age;
+}
+
+==========================================
+  
+2. 对象冒充
+
+function SuperType(name) {
+  this.name = name;
+  
+  this.sayName = function() {
+    window.alert(this.name);
+  };
+}
+
+function SubType(name, age) {
+  this.supertype = SuperType; // 在这里使用了对象冒充
+  this.supertype(name);
+  
+  this.age = age;
+}
+
+==========================================
+  
+3. 组合继承（最常用）
+
+function SuperType(name) {
+  this.name = name;
+}
+
+SuperType.prototype = {
+  sayName : function() {
+    window.alert(this.name);
+  }
+};
+
+function SubType(name, age) {
+  SuperType.call(this, name); // 在这里继承属性
+  this.age = age;
+}
+
+SubType.prototype = new SuperType(); // 这里继承方法
+```
+
+
+
+
 
 闭包/立即执行函数是什么？
 
@@ -77,6 +244,8 @@ Flash、Ajax 各自的优缺点，在使用中如何取舍?
 事件绑定和普通事件有什么区别，IE 和 DOM 事件流的区别
 
 javascript 的本地对象，内置对象和宿主对象
+
+
 
 - Common.js 和 ES6 中模块引入的区别？
 
@@ -185,21 +354,22 @@ Function.prototype.myApply = function (context) {
 }
 
 bind 函数实现
- Function.prototype.myBind = function (context) {
-   // 判断调用对象是否为函数
-   if (typeof this !== "function") {
-     throw new TypeError("Error")
-   }
-   
-   // 获取参数
-   var args = [...arguments].slice(1),
-       fn = this;
-   
-   return function Fn() {
-     // 根据调用方式，传入不同绑定值
-     return fn.apply(this instanceof Fn ? this : context, args.concat(...arguments));
-   }
- }
+
+Function.prototype.myBind = function (context) {
+  // 判断调用对象是否为函数
+  if (typeof this !== "function") {
+    throw new TypeError("Error")
+  }
+
+  // 获取参数
+  var args = [...arguments].slice(1),
+      fn = this;
+
+  return function Fn() {
+    // 根据调用方式，传入不同绑定值
+    return fn.apply(this instanceof Fn ? this : context, args.concat(...arguments));
+  }
+}
 ```
 
 
