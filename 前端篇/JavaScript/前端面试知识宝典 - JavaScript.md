@@ -526,3 +526,223 @@ function asyncToGenerator(generatorFunc) {
 }
 ```
 
+
+
+
+
+## 1. 什么是Ajax，为什么要使用Ajax（请谈一下你对Ajax的认识）
+- **什么是ajax：**
+	- AJAX是“Asynchronous JavaScript and XML”的缩写。他是指一种创建交互式网页应用的网页开发技术。
+
+- **Ajax包含下列技术：**
+	- 基于web标准（standards-basedpresentation）XHTML+CSS的表示；
+	- 使用 DOM（Document ObjectModel）进行动态显示及交互；
+	- 使用 XML 和 XSLT 进行数据交换及相关操作；
+	- 使用 XMLHttpRequest 进行异步数据查询、检索；
+	- 使用 JavaScript 将所有的东西绑定在一起。
+
+## 2. 为什么要用Ajax
+- **Ajax应用程序的优势在于：**
+	- 通过异步模式，提升了用户体验
+	- 优化了浏览器和服务器之间的传输，减少不必要的数据往返，减少了带宽占用
+	- Ajax引擎在客户端运行，承担了一部分本来由服务器承担的工作，从而减少了大用户量下的服务器负载。
+
+## 3. Ajax最大的特点是什么
+- Ajax可以实现动态不刷新（局部刷新）
+- 能在不更新整个页面的前提下维护数据。
+- 这使得Web应用程序更为迅捷地回应用户动作，并避免了在网络上发送那些没有改变过的信息。
+
+## 4. 请谈一下Ajax的优点？
+- 通过异步模式，提升了用户体验
+- 优化了浏览器和服务器之间的传输，减少不必要的数据往返，减少了带宽占用
+- Ajax引擎在客户端运行，承担了一部分本来由服务器承担的工作，从而减少了大用户量下的服务器负载。
+- Ajax可以实现动态不刷新（局部刷新）
+
+## 5. 原生JS写Ajax请求有几个步骤？分别是什么？
+- 创建一个异步对象
+```js
+var xmlhttp=new XMLHttpRequest();
+```
+
+- 设置请求方式和请求地址
+	- method：请求的类型；GET 或 POST
+	- url：文件在服务器上的位置
+	- async：true（异步）或 false（同步）
+```js
+xmlhttp.open("GET", "04-ajax-get.php", true);
+```
+
+- 发送请求
+```js
+xmlhttp.send();
+```
+
+- 监听状态的变化
+	- 0: 请求未初始化
+	- 1: 服务器连接已建立
+	- 2: 请求已接收
+	- 3: 请求处理中
+	- 4: 请求已完成，且响应已就绪
+```js
+xmlhttp.onreadystatechange = function (ev2) {
+    if(xmlhttp.readyState === 4){
+        // 判断是否请求成功
+        if(xmlhttp.status >= 200 && xmlhttp.status < 300 ||
+           xmlhttp.status === 304){
+            // 5.处理返回的结果
+            console.log("接收到服务器返回的数据");
+        }else{
+            console.log("没有接收到服务器返回的数据");
+        }
+    }
+}
+```
+
+- 处理返回的结果
+```js
+if(xmlhttp.status >= 200 && xmlhttp.status < 300 ||
+   xmlhttp.status === 304){
+    // 5.处理返回的结果
+    console.log("接收到服务器返回的数据");
+}else{
+    console.log("没有接收到服务器返回的数据");
+}
+```
+
+## 6. GET请求和POST请求的异同
+- 相同点:
+**都是将数据提交到远程服务器**
+- 不同点:
+	- 提交数据存储的位置不同
+		- GET请求会将数据放到URL后面
+		- POST请求会将数据放到请求头中
+	- 提交数据大小限制不同
+		- GET请求对数据有大小限制
+		- POST请求对数据没有大小限制
+
+## 7. GET/POST请求应用场景
+- GET请求用于提交非敏感数据和小数据
+- POST请求用于提交敏感数据和大数据
+
+## 8. AJAX使用了哪些技术？
+- HTML / XHTML和CSS - 这些技术用于显示内容和样式。
+- DOM - 用于动态显示和与数据交互。
+- XML - 用于与服务器之间传送数据
+- XMLHttpRequest - 用于客户端和服务器之间的异步通信。
+- JavaScript - 主要用于客户端验证。
+
+## 9. 常见的AJAX框架是什么？
+- Dojo Toolkit
+- YUI
+- Google Web Toolkit（GWT）
+- Spry
+- MooTools
+- Prototype
+
+## 10. XMLHttpRequest的目的是什么？
+- 将后台数据发送到服务器。
+- 从服务器请求数据。
+- 从服务器接收数据。
+- 在不重新加载页面的情况下更新数据。
+
+## 11. XMLHttpRequest的属性是什么？
+- onReadyStateChange - 只要readystate属性发生变化，就会调用它。
+- readyState - 表示请求的状态。
+- responseText - 它将响应作为文本返回。
+- responseXML - 它以XML格式返回响应。
+- status - 返回请求的状态编号。
+- statusText - 返回状态的详细信息。
+
+## 12. XMLHttpRequest的重要方法是什么？
+- abort() - 用于取消当前请求。
+- getAllResponseHeaders() - 返回标题详细信息。
+- getResponseHeader() - 返回特定的标题详细信息。
+- open() - 用于打开请求。
+- send() - 用于发送请求。
+- setRequestHeader() - 它添加了请求标头。
+
+## 13. XMLHttpRequest使用的open()方法有哪些类型？
+- open(method,URL) - 它打开指定get或post方法和URL的请求。
+- open(method,URL,async) - 它与上面相同但是指定异步或不指定。
+- open(method,URL,async,userName,password) - 与上面相同，但指定用户名和密码。
+
+## 14. 调试AJAX应用程序的工具有哪些？
+- 适用于Mozilla Firefox的Firebug
+- 适用于IE的Fiddler（Internet Explorer）
+- JavaScript HTML调试器
+- MyEclipse AJAX工具
+- 脚本调试器
+
+## 15. JavaScript和AJAX有什么区别？
+| JavaScript                           | AJAX                                                     |
+| ------------------------------------ | -------------------------------------------------------- |
+| JavaScript是一种基于对象的脚本语言。 | AJAX是一组相互关联的技术，如JavaScript，XML，HTML，CSS等 |
+| 它请求服务器并等待响应。             | 它向服务器发送请求，不等待响应。                         |
+| 重新加载页面时会占用更多带宽。       | 它不会重新加载页面，因此占用的带宽更少。                 |
+
+## 16. 什么情况造成跨域？
+**同源策略限制 不同源会造成跨域。以下任意一种情况不同，都是不同源。**
+**例子：**
+|           |            |
+| --------- | ---------- |
+| http://   | 协议不同   |
+| www       | 子域名不同 |
+| baidu.com | 主域名不同 |
+| 8080      | 端口号不同 |
+| www.baidu.com| ip地址和网址不同
+
+## 17. 跨域解决方案有哪些？
+#### 1. jsonp (只能解决 get 跨域)
+- **原理：**
+	- 动态创建一个script标签。利用script标签的src属性不受同源策略限制。
+	- 因为所有的src属性和href属性都不受同源策略限制。可以请求第三方服务器数据内容。
+- **步骤：**
+	- 去创建一个script标签
+	- script的src属性设置接口地址
+	- 接口参数,必须要带一个自定义函数名 要不然后台无法返回数据。
+	- 通过定义函数名去接收后台返回数据
+```js
+//去创建一个script标签
+var  script = document.createElement("script");
+//script的src属性设置接口地址 并带一个callback回调函数名称
+script.src = "http://127.0.0.1:8888/index.php?callback=jsonpCallback";
+//插入到页面
+document.head.appendChild(script);
+//通过定义函数名去接收后台返回数据
+function jsonpCallback(data){
+    //注意  jsonp返回的数据是json对象可以直接使用
+    //ajax  取得数据是json字符串需要转换成json对象才可以使用。
+}
+```
+
+#### 2. CORS(跨域资源共享)
+- **原理：**
+	- 服务器设置Access-Control-Allow-OriginHTTP响应头之后，浏览器将会允许跨域请求
+- **限制：**
+	- 浏览器需要支持HTML5，可以支持POST，PUT等方法兼容ie9以上
+- 需要后台设置
+```
+Access-Control-Allow-Origin: *              //允许所有域名访问
+或者
+Access-Control-Allow-Origin: http://a.com   //只允许所有域名访问
+```
+
+#### 3. 设置 document.domain
+- **原理：**
+	- 相同主域名不同子域名下的页面，可以设置document.domain让它们同域
+- **限制：**
+	- 同域document提供的是页面间的互操作，需要载入iframe页面
+```js
+// URL http://a.com/foo
+var ifr = document.createElement('iframe');
+ifr.src = 'http://b.a.com/bar'; 
+ifr.onload = function(){
+    var ifrdoc = ifr.contentDocument || ifr.contentWindow.document;
+    ifrdoc.getElementsById("foo").innerHTML);
+};
+
+ifr.style.display = 'none';
+document.body.appendChild(ifr);
+```
+
+#### 4. 用Apache做转发(逆向代理)
