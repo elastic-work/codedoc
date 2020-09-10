@@ -88,9 +88,9 @@
     - HTTP缓存
   - 前端篇
       - 前端基础
-        - [前端面试知识宝典--HTML](.前端篇/HTML_HTML5/前端面试知识宝典--HTML.md)
-        - [前端面试知识宝典--CSS](.前端篇/CSS_CSS3/前端面试知识宝典--CSS.md)
-        - [前端面试知识宝典--JavaScript](.前端篇/JavaScript/前端面试知识宝典--JavaScript.md)
+        - [前端面试知识宝典--HTML](./前端篇/HTML_HTML5/前端面试知识宝典--HTML.md)
+        - [前端面试知识宝典--CSS](./前端篇/CSS_CSS3/前端面试知识宝典--CSS.md)
+        - [前端面试知识宝典--JavaScript](./前端篇/JavaScript/前端面试知识宝典--JavaScript.md)
       - 前端进阶
         - [前端面试知识宝典--HTML5](.前端篇/HTML_HTML5/前端面试知识宝典--HTML5.md)
         - [前端面试知识宝典--CSS3](.前端篇/CSS_CSS3/前端面试知识宝典--CSS3.md)
